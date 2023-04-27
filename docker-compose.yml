@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=cobrandobpo_db
+      - POSTGRES_USER=adminbpo
+      - POSTGRES_PASSWORD=PrU3B4Bp0
+    ports:                               
+      - "5432:5432" 
+  web:
+    build: .
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0:1234"
+    volumes:
+      - .:/code
+    ports:
+      - "1234:1234"
+    environment:
+      - POSTGRES_NAME=cobrandobpo_db
+      - POSTGRES_USER=adminbpo
+      - POSTGRES_PASSWORD=PrU3B4Bp0
+    depends_on:
+      - db
